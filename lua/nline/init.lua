@@ -26,7 +26,5 @@ vim.opt.statusline = '%!v:lua.NLineStatusLineGenerator()'
 
 return {
   make = make_statusline,
-  parts = require('nline.parts'),
-  wrappers = require('nline.wrappers'),
 }
 

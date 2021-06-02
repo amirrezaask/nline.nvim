@@ -68,22 +68,24 @@ function git.changes(icons)
 end
 
 function git.branch()
-  local branch
-  local success
-  success, branch = pcall(vim.fn['fugitive#head'])
-  if success and branch ~= '' then
-    return branch
-  else
-    local j = Job:new({
-      command = "git",
-      args = {"branch", "--show-current"},
-      cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h"),
-    })
+  return function()
+    local branch
+    local success
+    success, branch = pcall(vim.fn['fugitive#head'])
+    if success and branch ~= '' then
+      return branch
+    else
+      local j = Job:new({
+        command = "git",
+        args = {"branch", "--show-current"},
+        cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h"),
+      })
 
-    local ok, result = pcall(function()
-      return vim.trim(j:sync()[1])
-    end)
-    if ok then return result end
+      local ok, result = pcall(function()
+        return vim.trim(j:sync()[1])
+      end)
+      if ok then return result end
+    end
   end
 end
 

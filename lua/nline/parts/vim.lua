@@ -1,4 +1,20 @@
+local makers = require('nline.parts.util')
+local static = makers.make_static
+local with_hl = makers.with_hl
+
 local parts = {}
+parts.modified = static(function() return '%m' end)
+parts.readonly = static('%r')
+parts.space = static(' ')
+parts.filename = static('%f')
+parts.filename_shorten = static("%{pathshorten(expand('%:f'))}")
+parts.pipe = static('|')
+parts.line = static('%l')
+parts.col = static('%c')
+parts.percentage_of_file = static('%%%p')
+parts.filetype = static('%y')
+parts.seperator = static('%=')
+parts.colon = static(':')
 
 -- @params opts: table
 -- @params opts.hls table
@@ -50,37 +66,24 @@ function parts.mode(opts)
   return function()
     local m = vim.api.nvim_get_mode().mode
     if m == 'n' then
-      return string.format('%%#%s# %s %%*', opts.hls.normal or default_opts.hls.normal, opts.texts.normal or default_opts.texts.normal)
+      return with_hl(opts.texts.normal or default_opts.texts.normal, opts.hls.normal or default_opts.hls.normal)
     elseif m == 'v' or m == 'V' then
-      return string.format('%%#%s# %s %%*', opts.hls.visual or default_opts.hls.visual, opts.texts.visual or default_opts.texts.visual)
+      return with_hl(opts.texts.visual or default_opts.texts.visual, opts.hls.visual or default_opts.hls.visual)
     elseif m == '' then
-      return string.format('%%#%s# %s %%*', opts.hls.visual_block or default_opts.hls.visual_block, opts.texts.visual_block or default_opts.texts.visual_block)
+      return with_hl(opts.texts.visual_block or default_opts.texts.visual_block, opts.hls.visual_block or default_opts.hls.visual_block)
     elseif m == 'i' then
-      return string.format('%%#%s# %s %%*', opts.hls.insert or default_opts.hls.insert, opts.texts.insert or default_opts.texts.insert)
+      return with_hl(opts.texts.insert or default_opts.texts.insert, opts.hls.insert or default_opts.hls.insert)
     elseif m == 'ic' or m == 'ix' then
-      return string.format('%%#%s# %s %%*', opts.hls.insert_complete or default_opts.hls.insert_complete, opts.texts.insert_complete or default_opts.texts.insert_complete)
+      return with_hl(opts.texts.insert_complete or default_opts.texts.insert_complete, opts.hls.insert_complete or default_opts.hls.insert_complete)
     elseif m == 'c' then
-      return string.format('%%#%s# %s %%*', opts.hls.command or default_opts.hls.command, opts.texts.command or default_opts.texts.command)
+      return with_hl(opts.texts.command or default_opts.texts.command, opts.hls.command or default_opts.hls.command)
     elseif m == 't' then
-      return string.format('%%#%s# %s %%*', opts.hls.terminal or default_opts.hls.terminal, opts.texts.terminal or default_opts.texts.terminal)
+      return with_hl(opts.texts.terminal or default_opts.texts.terminal, opts.hls.terminal or default_opts.hls.terminal)
     else
       return m
     end
   end
 end
-
-parts.modified = '%m'
-parts.readonly = '%r'
-parts.space = ' '
-parts.filename = '%f'
-parts.filename_shorten = "%{pathshorten(expand('%:f'))}"
-parts.pipe = '|'
-parts.line = '%l'
-parts.col = '%c'
-parts.percentage_of_file = '%%%p'
-parts.filetype = '%y'
-parts.seperator = '%='
-parts.colon = ':'
 
 parts.icons = {
   file = function()
@@ -109,5 +112,6 @@ parts.icons = {
     return ''
   end
 }
+
 
 return parts

@@ -37,8 +37,10 @@ function lsp.current_function(symbol)
   end
 end
 
-function lsp.diagnostics(icons)
-  icons = icons or {}
+function lsp.diagnostics(config)
+  config = config or {}
+  config.icons = config.icons or {}
+  local icons = config.icons
   return function()
     local diag = lspstatus.diagnostics()
     local output = {}
