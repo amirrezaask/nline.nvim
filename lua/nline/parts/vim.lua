@@ -3,7 +3,7 @@ local static = makers.make_static
 local with_hl = makers.with_hl
 
 local parts = {}
-parts.modified = static(function() return '%m' end)
+parts.modified = static('%m')
 parts.readonly = static('%r')
 parts.space = static(' ')
 parts.filename = static('%f')
