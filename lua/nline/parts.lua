@@ -1,31 +1,68 @@
 local parts = {}
 
+-- @params opts: table
+-- @params opts.hls table
+-- @params opts.texts table
+-- {
+    -- hls = {
+    --   normal = 'NormalMode',
+    --   visual = 'VisualMode',
+    --   visual_block = 'VisualBlockMode',
+    --   insert = 'InsertMode',
+    --   insert_complete = 'InsertMode',
+    --   command = 'CommandMode',
+    --   terminal = 'TerminalMode'
+    -- },
+    -- texts = {
+    --   normal = 'Normal',
+    --   visual = 'Visual',
+    --   visual_block = 'VisualBlock',
+    --   insert = 'Insert',
+    --   insert_complete = 'IComplete',
+    --   command = 'Command',
+    --   terminal = 'Terminal'
+    -- }
+  -- }
 function parts.mode(opts)
   local default_opts = {
-    normal = 'NormalMode',
-    visual = 'VisualMode',
-    visual_block = 'VisualBlockMode',
-    insert = 'InsertMode',
-    command = 'CommandMode',
-    terminal = 'TerminalMode'
+    hls = {
+      normal = 'NormalMode',
+      visual = 'VisualMode',
+      visual_block = 'VisualBlockMode',
+      insert = 'InsertMode',
+      insert_complete = 'InsertMode',
+      command = 'CommandMode',
+      terminal = 'TerminalMode'
+    },
+    texts = {
+      normal = 'Normal',
+      visual = 'Visual',
+      visual_block = 'VisualBlock',
+      insert = 'Insert',
+      insert_complete = 'IComplete',
+      command = 'Command',
+      terminal = 'Terminal'
+    }
   }
   opts = opts or {}
+  opts.hls = opts.hls or {}
+  opts.texts = opts.texts or {}
   return function()
     local m = vim.api.nvim_get_mode().mode
     if m == 'n' then
-      return string.format('%%#%s# Normal %%*', opts.normal or default_opts.normal)
+      return string.format('%%#%s# %s %%*', opts.hls.normal or default_opts.hls.normal, opts.texts.normal or default_opts.texts.normal)
     elseif m == 'v' or m == 'V' then
-      return string.format('%%#%s# Visual %%*', opts.visual or default_opts.visual)
+      return string.format('%%#%s# %s %%*', opts.hls.visual or default_opts.hls.visual, opts.texts.visual or default_opts.texts.visual)
     elseif m == '' then
-      return string.format('%%#%s# VisualBlock %%*', opts.visual_block or default_opts.visual_block)
+      return string.format('%%#%s# %s %%*', opts.hls.visual_block or default_opts.hls.visual_block, opts.texts.visual_block or default_opts.texts.visual_block)
     elseif m == 'i' then
-      return string.format('%%#%s# Insert %%*', opts.insert or default_opts.insert)
+      return string.format('%%#%s# %s %%*', opts.hls.insert or default_opts.hls.insert, opts.texts.insert or default_opts.texts.insert)
     elseif m == 'ic' or m == 'ix' then
-      return string.format('%%#%s# IComplete %%*', opts.insert or default_opts.insert)
+      return string.format('%%#%s# %s %%*', opts.hls.insert_complete or default_opts.hls.insert_complete, opts.texts.insert_complete or default_opts.texts.insert_complete)
     elseif m == 'c' then
-      return string.format('%%#%s# Command %%*', opts.command or default_opts.command)
+      return string.format('%%#%s# %s %%*', opts.hls.command or default_opts.hls.command, opts.texts.command or default_opts.texts.command)
     elseif m == 't' then
-      return string.format('%%#%s# Terminal %%*', opts.terminal or default_opts.terminal)
+      return string.format('%%#%s# %s %%*', opts.hls.terminal or default_opts.hls.terminal, opts.texts.terminal or default_opts.texts.terminal)
     else
       return m
     end
@@ -151,8 +188,6 @@ function parts.git_changes(icons)
     if vim.fn.filereadable(vim.api.nvim_buf_get_name(0)) ~= 1 then
       return ''
     end
-    local has_spawn, spawn = pcall(require, 'spawn')
-    if not has_spawn then return '' end
     local parse_shortstat_output = function(s)
       local result = {}
 
