@@ -38,12 +38,12 @@ function git.changes(icons)
 
       local insert = {git_insertions:match_str(s)}
       if not vim.tbl_isempty(insert) then
-        result['deletions'] = string.sub(s, insert[1] + 1, insert[2])
+        result['insertions'] = string.sub(s, insert[1] + 1, insert[2])
       end
 
       local delete = {git_deletions:match_str(s)}
       if not vim.tbl_isempty(delete) then
-        result['insertions'] = string.sub(s, delete[1] + 1, delete[2])
+        result['deletions'] = string.sub(s, delete[1] + 1, delete[2])
       end
       return result
     end
