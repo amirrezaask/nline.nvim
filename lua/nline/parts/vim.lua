@@ -17,8 +17,6 @@ local parts = {}
 parts.modified = static('%m')
 parts.readonly = static('%r')
 parts.space = static(' ')
-parts.filename = static('%f')
-parts.filename_shorten = static("%{pathshorten(expand('%:f'))}")
 parts.pipe = static('|')
 parts.line = static('%l')
 parts.col = static('%c')
@@ -26,6 +24,14 @@ parts.percentage_of_file = static('%%%p')
 parts.filetype = static('%y')
 parts.seperator = static('%=')
 parts.colon = static(':')
+
+function parts.filename(opts)
+  if opts.shorten then
+    return static("%{pathshorten(expand('%:f'))}")
+  else
+    return static('%f')
+  end
+end
 
 -- @params opts: table
 -- @params opts.hls table
