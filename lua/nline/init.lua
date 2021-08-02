@@ -16,7 +16,9 @@ local function make_statusline(elements, opts)
     local _parts = {}
     for _, e in ipairs(elements) do
       local processed = process(e)
-      table.insert(_parts, processed)
+      if processed ~= '' then
+        table.insert(_parts, processed)
+      end
     end
     return table.concat(_parts, opts.delimiter or '')
   end
