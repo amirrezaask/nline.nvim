@@ -22,9 +22,8 @@ local function make_statusline(elements, opts)
     end
     return table.concat(_parts, opts.delimiter or "")
   end
+  vim.opt.statusline = "%!v:lua.NLineStatusLineGenerator()"
 end
-
-vim.opt.statusline = "%!v:lua.NLineStatusLineGenerator()"
 
 return {
   make = make_statusline,
